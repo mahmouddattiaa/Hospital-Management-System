@@ -4,30 +4,54 @@
 #include "priQueue.h"
 #include"Car.h"
 #include"Hospital.h"
+
+/**
+ * @class Organizer
+ * @brief Main controller class that orchestrates the hospital management system
+ */
 class Organizer
 {
 private:
-	LinkedQueue<patient*> Sp_list;
-	LinkedQueue<patient*> Np_list;
-	LinkedQueue<patient*> NpWaitinglist;
-	LinkedQueue<patient*> SpWaitinglist;
-	priQueue<patient*> Ep_list;
-	LinkedQueue<patient*>AllPReqs;
-	LinkedQueue<patient*>CancellationList;
-	priQueue<Car*>OutCars;
-	priQueue<Car*>BackCars;
-	LinkedQueue<patient*>FinishedpatientList;
-	int TNH, SPR, EPR, NPR, TRQN, OC, BC, FC;
-	Hospital* Hospitallist;
-	int distancematrix[4][4];
-	int cancelledreq;
-	int countWaitN;
-	int countWaitS;
-	Hospital* thishospital;
+	// Patient Lists
+	LinkedQueue<patient*> Sp_list;           // Serious patients list
+	LinkedQueue<patient*> Np_list;           // Normal patients list
+	LinkedQueue<patient*> NpWaitinglist;     // Normal patients waiting list
+	LinkedQueue<patient*> SpWaitinglist;     // Serious patients waiting list
+	priQueue<patient*> Ep_list;              // Emergency patients list (priority queue)
+	LinkedQueue<patient*> AllPReqs;          // All patient requests
+	LinkedQueue<patient*> CancellationList;  // Cancelled requests
+	LinkedQueue<patient*> FinishedpatientList; // Patients who completed treatment
+	
+	// Ambulance car lists
+	priQueue<Car*> OutCars;                  // Cars on the way to patients
+	priQueue<Car*> BackCars;                 // Cars on the way back with patients
+	
+	// System parameters
+	int TNH;            // Total number of hospitals
+	int SPR;            // Serious patient requests count
+	int EPR;            // Emergency patient requests count
+	int NPR;            // Normal patient requests count
+	int TRQN;           // Total request number
+	int OC;             // Out cars count
+	int BC;             // Back cars count
+	int FC;             // Finished cars count
+	
+	// Hospital data
+	Hospital* Hospitallist;                  // List of all hospitals
+	int distancematrix[4][4];                // Matrix of distances between hospitals
+	
+	// Tracking data
+	int cancelledreq;                        // Number of cancelled requests
+	int countWaitN;                          // Count of waiting normal patients
+	int countWaitS;                          // Count of waiting serious patients
+	Hospital* thishospital;                  // Current hospital being processed
+
 public:
+	// Constructors
 	Organizer();
 	Organizer(int NH);
-	void setmatrix(int row, int col, int num);
+	
+	// System parameters - getters and setters
 	void setTNH(int x);
 	int getTNH();
 	void setSPR(int x);
@@ -43,7 +67,12 @@ public:
 	void setBC(int x);
 	int getBC();
 	int getfinishlistnumber();
+	void setmatrix(int row, int col, int num);
+	
+	// Hospital management
 	Hospital* gethospital(int i);
+	
+	// Status checking methods
 	bool Isoutcarempty();
 	bool Isbackcarempty();
 	bool IsNPlistempty();
@@ -52,13 +81,16 @@ public:
 	int getSPlistnumber();
 	int getNPlistnumber();
 	int getEPlistnumber();
-	void handlecancelledcars(patient*& temppatient);
+	int getwaitN();
+	int getwaitS();
+	
+	// Queue management methods
 	void enQSplist(patient*& Req);
 	void enQNplist(patient*& Req);
 	void enQEplist(patient*& Req);
 	void deQSplist(patient*& Req);
-	void enQAllPlist(patient*& Req);
 	void deQAllPlist(patient*& Req);
+	void enQAllPlist(patient*& Req);
 	void enQCancellist(patient*& Req);
 	void deQCancellist(patient*& Req);
 	void enQoutcars(Car* c, int sev);
@@ -69,21 +101,28 @@ public:
 	void deQFinishedpatientlist(patient*& Req);
 	void deQNplist(patient*& Req);
 	void deQEplist(patient*& Req);
-	void HandleEP(patient*& req);//required to handle ep request if no room in current hospital
-	void requesthandle(patient*& req);//function to handle all types of requests
+	
+	// Request handling
+	void HandleEP(patient*& req);          //required to handle ep request if no room in current hospital
+	void requesthandle(patient*& req);     //function to handle all types of requests
 	void requestsave(patient*& req);
+	patient*& searchreq(int& id);          // Can return nullptr if patient not found
+	void handlecancelledcars(patient*& temppatient);
+	void cancelreqcheck(int time);
+	
+	// Car management
 	void sendtoOUTcars(Car*& C);
 	void returnCartoBACKcars(int timestep);
-	void cancelreqcheck(int time);
-	void HandleWaiting(int timestep);
 	void printcars();
+	void HandleWaiting(int timestep);
+	
+	// Patient management
 	void handlefinishedpatients(int timestep);
 	void printfinishedpatients();
-	int getwaitN();
-	patient*& searchreq(int& id); // Can return nullptr if patient not found
-	int getwaitS();
+	void assignEPreq(int pid, int TNH, Hospital** Hospitallist);
+	
+	// Simulation control
 	void InteractiveMode(int timeStep);
 	void InputRead(string text);
 	void fileoutput();
-	void assignEPreq(int pid, int TNH, Hospital** Hospitallist);
 };

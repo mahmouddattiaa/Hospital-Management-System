@@ -1,58 +1,119 @@
+/**
+ * @file priQueue.h
+ * @brief Implementation of a priority queue using a sorted linked list
+ * 
+ * This file implements a priority queue where elements are ordered by priority.
+ * The element with highest priority is at the front of the queue.
+ */
+
 #pragma once
 
-
-template < typename T>
+/**
+ * @class priNode
+ * @brief Node class for priority queue
+ * 
+ * Each node contains an item of type T, a priority value, and a pointer to the next node
+ */
+template <typename T>
 class priNode
 {
-private :
+private:
 	T item;		// A data item
 	int pri;
     //priority of the item
 	priNode<T>* next; // Pointer to next node
 public :
+	/**
+	 * @brief Constructor
+	 * @param r_Item The data to store in the node
+	 * @param PRI The priority of the data
+	 */
 	priNode(const T& r_Item, int PRI)
 	{
 		setItem(r_Item, PRI);
 		next = nullptr;
 	}
+	/**
+	 * @brief Set the item and its priority
+	 * @param r_Item The data to store
+	 * @param PRI The priority value
+	 */
 	void setItem(const T& r_Item, int PRI)
 	{
 		item = r_Item;
 		pri = PRI;
 	}
+	/**
+	 * @brief Set the next node pointer
+	 * @param nextNodePtr Pointer to the next node
+	 */
 	void setNext(priNode<T>* nextNodePtr)
 	{		next = nextNodePtr; 	}
 	
+	/**
+	 * @brief Get the item and its priority
+	 * @param PRI Reference to store the priority value
+	 * @return The data item
+	 */
 	T getItem(int& PRI) const
 	{
 		PRI = pri;
 		return item;
 	}
 	
+	/**
+	 * @brief Get the next node
+	 * @return Pointer to the next node
+	 */
 	priNode<T>* getNext() const 
 	{		return next;	}
 	
+	/**
+	 * @brief Get the priority value
+	 * @return The priority value
+	 */
 	int getPri() const
 	{		return pri; 	}
 }; // end Node
 
-//This class impelements the priority queue as a sorted list (Linked List)
-//The item with highest priority is at the front of the queue
+/**
+ * @class priQueue
+ * @brief Priority queue implementation using a sorted linked list
+ * 
+ * The queue is maintained in descending order of priority,
+ * with the highest priority element at the front of the queue.
+ */
 template <typename T>
 class priQueue
 {
     priNode<T>* head;
     int count;
 public:
+    /**
+     * @brief Constructor
+     * Initialize an empty priority queue
+     */
     priQueue() : head(nullptr) ,count(0){}
 
+    /**
+     * @brief Destructor
+     * Deallocate all nodes in the queue
+     */
     ~priQueue() {
         T tmp;
         int p;
         while (dequeue(tmp,p));
     }
 
-    //insert the new node in its correct position according to its priority
+    /**
+     * @brief Add an element to the priority queue
+     * 
+     * Inserts the new node in its correct position according to its priority.
+     * Higher priority values are placed closer to the front.
+     * 
+     * @param data The data to be inserted
+     * @param priority The priority value of the data
+     */
     void enqueue(const T& data, int priority) {
         priNode<T>* newNode = new priNode<T>(data, priority);
 
@@ -73,6 +134,13 @@ public:
         count++;
     }
 
+    /**
+     * @brief Remove and return the highest priority element
+     * 
+     * @param topEntry Reference to store the dequeued data
+     * @param pri Reference to store the priority of the dequeued data
+     * @return true if dequeue was successful, false if queue is empty
+     */
     bool dequeue(T& topEntry, int& pri) {
         if (isEmpty())
             return false;
@@ -85,9 +153,16 @@ public:
         return true;
       
     }
-    T& searchanddelete(T& x,int& pri) {
+    /**
+     * @brief Search for and delete an element with matching data and priority
+     * 
+     * @param x The data to search for
+     * @param pri The priority to match
+     * @return The deleted element or default value if not found
+     */
+    T searchanddelete(T& x,int& pri) {
         if (isEmpty()) {
-            return false;
+            return T(); // Return default value
         }
         if (head->getItem() == x&&head->getPri()==pri) {
             T temp;
@@ -110,13 +185,24 @@ public:
 
         }
         else {
-            return;
+            return T(); // Return default value
         }
     }
 
+    /**
+     * @brief Get the number of elements in the queue
+     * @return Element count
+     */
     int getcount() {
         return count;
     }
+    /**
+     * @brief View the highest priority element without removing it
+     * 
+     * @param topEntry Reference to store the front data
+     * @param pri Reference to store the priority of the front data
+     * @return true if peek was successful, false if queue is empty
+     */
     bool peek(T& topEntry, int& pri) {
         if (isEmpty())
             return false;
@@ -126,6 +212,10 @@ public:
         return true;
     }
 
+    /**
+     * @brief Check if the queue is empty
+     * @return true if empty, false otherwise
+     */
     bool isEmpty() const {
         return head == nullptr;
     }
