@@ -134,6 +134,7 @@
     <ClInclude Include="Organizer.h" />
     <ClInclude Include="patient_request.h" />
     <ClInclude Include="priQueue.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Car.cpp" />
@@ -141,9 +142,17 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Organizer.cpp" />
     <ClCompile Include="patient_request.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data.txt" />
+    <Text Include="data2.txt" />
+    <Text Include="data3.txt" />
+    <Text Include="data4.txt" />
+    <Text Include="data5.txt" />
+    <Text Include="data6.txt" />
+    <Text Include="output.txt" />
+    <Text Include="output2.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

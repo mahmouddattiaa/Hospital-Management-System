@@ -6,7 +6,8 @@ class priNode
 {
 private :
 	T item;		// A data item
-	int pri;	//priority of the item
+	int pri;
+    //priority of the item
 	priNode<T>* next; // Pointer to next node
 public :
 	priNode(const T& r_Item, int PRI)
@@ -41,8 +42,9 @@ template <typename T>
 class priQueue
 {
     priNode<T>* head;
+    int count;
 public:
-    priQueue() : head(nullptr) {}
+    priQueue() : head(nullptr) ,count(0){}
 
     ~priQueue() {
         T tmp;
@@ -58,6 +60,7 @@ public:
             
             newNode->setNext(head);
             head = newNode;
+            count++;
             return;
         }
        
@@ -67,6 +70,7 @@ public:
         }
         newNode->setNext( current->getNext());
         current->setNext( newNode);        
+        count++;
     }
 
     bool dequeue(T& topEntry, int& pri) {
@@ -77,9 +81,42 @@ public:
         priNode<T>* temp = head;
         head = head->getNext();
         delete temp;
+        count--;
         return true;
+      
+    }
+    T& searchanddelete(T& x,int& pri) {
+        if (isEmpty()) {
+            return false;
+        }
+        if (head->getItem() == x&&head->getPri()==pri) {
+            T temp;
+            int y;
+            dequeue(temp,y);
+            return temp;
+        }
+        priNode<T>* currentptr = head;
+        priNode<T>* previousptr = nullptr;
+        while (currentptr != nullptr && currentptr->getItem() != x||currentptr->getPri()!=pri) {
+            previousptr = currentptr;
+            currentptr = currentptr->getNext();
+        }
+        if (currentptr != nullptr) {
+            previousptr->setNext(currentptr->getNext());
+            priNode<T>* deletednode = currentptr;
+            delete currentptr;
+            count--;
+            return deletednode;
+
+        }
+        else {
+            return;
+        }
     }
 
+    int getcount() {
+        return count;
+    }
     bool peek(T& topEntry, int& pri) {
         if (isEmpty())
             return false;

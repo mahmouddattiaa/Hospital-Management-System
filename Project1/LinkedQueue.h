@@ -110,13 +110,31 @@ private :
 	
 	Node<T>* backPtr;
 	Node<T>* frontPtr;
+	int count;
 public :
 	LinkedQueue();	
 	bool isEmpty() const ;
 	bool enqueue(const T& newEntry);
 	bool dequeue(T& frntEntry);  
 	bool peek(T& frntEntry)  const;	
+	bool searchanddelete(T& x);
+	T search(T& x);
+	int getcount() {
+		return count;
+	}
 	~LinkedQueue();
+	/*void PrintQueue()
+	{
+	    int x = 0;
+		Node<T>* current = frontPtr;
+		if (current != nullptr) {
+			while (x <= counter) {
+				cout << current->getItem();
+				current = current->getNext();
+				x++;
+			}
+		}
+	}*/
 
 	//copy constructor
 	LinkedQueue(const LinkedQueue<T> & LQ);
@@ -134,10 +152,67 @@ LinkedQueue<T>::LinkedQueue()
 {
 	backPtr=nullptr;
 	frontPtr=nullptr;
-
+	count = 0;
 }
 /////////////////////////////////////////////////////////////////////////////////////////
+template <typename T>
+bool LinkedQueue<T>::searchanddelete(T& x) {
+	if (isEmpty()) {
+		return false;
+	}
+	if (frontPtr->getItem() == x) {
+		T temp;
+		dequeue(temp);
+		return true;
+	}
+	Node<T>* currentptr = frontPtr;
+	Node<T>* previousptr = nullptr;
+	while (currentptr != nullptr && currentptr->getItem() != x) {
+		previousptr = currentptr;
+		currentptr = currentptr->getNext();
+	}
+	if (currentptr != nullptr) {
+		previousptr->setNext(currentptr->getNext());
+		if (currentptr == backPtr) {
+			backPtr = previousptr;
+		}
+		delete currentptr;
+		count--;
+		return true;
+		
+	}
+	else {
+		return false;
+	}
+}
+template<typename T>
+inline T LinkedQueue<T>::search(T& x)
+{
+	if (isEmpty()) {
+		return ;
+	}
+	if (frontPtr->getItem() == x) {
+		return frontPtr->getItem();
+	}
+	Node<T>* currentptr = frontPtr;
+	Node<T>* previousptr = nullptr;
+	while (currentptr != nullptr && currentptr->getItem() != x) {
+		previousptr = currentptr;
+		currentptr = currentptr->getNext();
+	}
+	if (currentptr != nullptr) {
+		previousptr->setNext(currentptr->getNext());
+		if (currentptr == backPtr) {
+			backPtr = previousptr;
+		}
+	
+		return currentptr->getItem();
 
+	}
+	else {
+		return ;
+	}
+}
 /*
 Function: isEmpty
 Sees whether this queue is empty.
@@ -171,6 +246,7 @@ bool LinkedQueue<T>::enqueue( const T& newEntry)
 		backPtr->setNext(newNodePtr); // The queue was not empty
 
 	backPtr = newNodePtr; // New node is the last node now
+	count++;
 	return true ;
 } // end enqueue
 
@@ -200,7 +276,7 @@ bool LinkedQueue<T>:: dequeue(T& frntEntry)
 		
 	// Free memory reserved for the dequeued node
 	delete nodeToDeletePtr;
-
+	count--;
 	return true;
 
 }
